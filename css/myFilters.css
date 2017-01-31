@@ -1,0 +1,13 @@
+.upload-filter-label-phobos .upload-filter-preview,
+.filter-phobos {
+  filter: sepia(.6) hue-rotate(90deg) saturate(.7);
+}
+
+.upload-filter-label-heat .upload-filter-preview,
+.filter-heat {
+  filter: blur(3px) grayscale(.5);
+}
+
+.filter-image-preview {
+  transition: transform .3s linear;
+}
