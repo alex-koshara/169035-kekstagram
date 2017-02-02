@@ -2,11 +2,25 @@
 
 var uploadForm = document.querySelector('#upload-select-image');
 var uploadFile = document.querySelector('#upload-file');
+var uploadFileLabel = document.querySelector('.upload-file.upload-control');
 var closeForm = document.querySelector('.upload-form-cancel');
 var uploadOverlay = document.querySelector('.upload-overlay');
+var ENTER_KEY_KODE = 13;
+var SPACE_KEY_KODE = 32;
+
 // Закрытие и открытие формы
 uploadFile.addEventListener('change', toggleOverlay);
 closeForm.addEventListener('click', toggleOverlay);
+
+function pressEnterOrSpace(e) {
+  return e.keyCode === ENTER_KEY_KODE || e.keyCode === SPACE_KEY_KODE;
+}
+
+uploadFileLabel.addEventListener('keydown', function (e) {
+  if (pressEnterOrSpace(e)) {
+    uploadFile.click(); // принудительный клик
+  }
+});
 
 function toggleOverlay() {
   uploadOverlay.classList.toggle('invisible');
@@ -16,30 +30,37 @@ function toggleOverlay() {
 }
 
 // Переключение фильтров
+var filterControls = document.querySelector('.upload-filter-controls'); // делегируй
 var photo = document.querySelector('.upload-form-preview');
 var photoFilters = document.querySelectorAll('input[name="upload-filter"]');
 
-for (var i = 0; i < photoFilters.length; i++) {
-  listenFilter(photoFilters[i]);
-}
+filterControls.addEventListener('keydown', function (e) {
+  if (pressEnterOrSpace(e)) {
+    applyFilter(e.target.previousElementSibling);
+  }
+});
 
-function listenFilter(filter) {
-  filter.addEventListener('click', function () {
-    toggleFilter(filter);
-  });
-}
+filterControls.addEventListener('click', changeClickFilter);
 
 function findFilter(filter) {
   return 'filter-' + filter.value;
 }
 
+function applyFilter(filter) {
+  var activeFilter = findFilter(filter);
+  toggleFilter(activeFilter);
+}
+
+function changeClickFilter(e) {
+  applyFilter(e.target);
+}
+
 // удаляем старые фильтры и добавляем кликнутый
 function toggleFilter(filter) {
-  var activeFilter = findFilter(filter);
   for (var k = 0; k < photoFilters.length; k++) {
     photo.classList.remove(findFilter(photoFilters[k]));
   }
-  photo.classList.add(activeFilter);
+  photo.classList.add(filter);
 }
 
 // Контроль размера фото
