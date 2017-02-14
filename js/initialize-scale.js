@@ -1,32 +1,35 @@
 'use strict';
 
-window.initializeScale = function (img, step, startValue) {
+window.initializeScale = (function () {
   var formPhotoResize = document.querySelector('.upload-resize-controls');
   var photoDec = document.querySelector('.upload-resize-controls-button-dec');
   var photoInc = document.querySelector('.upload-resize-controls-button-inc');
   var photoSize = document.querySelector('.upload-resize-controls-value');
-  var photoScale = startValue;
 
-  formPhotoResize.addEventListener('click', photoResizeControll);
+  return function (img, step, startValue) {
+    var photoScale = startValue;
 
-// высчитываем размер изображения для CSS и для пользователя в %
-  function photoResizeControll(e) {
-    var buttonControl = e.target;
+    formPhotoResize.addEventListener('click', photoResizeControll);
 
-    if (buttonControl === photoDec && (photoScale - step) > 0) {
-      photoScale = photoScale - step;
-      setPhotoScale(photoScale);
+    // высчитываем размер изображения для CSS и для пользователя в %
+    function photoResizeControll(e) {
+      var buttonControl = e.target;
+
+      if (buttonControl === photoDec && (photoScale - step) > 0) {
+        photoScale = photoScale - step;
+        setPhotoScale(photoScale);
+      }
+      if (buttonControl === photoInc && (photoScale + step) <= 100) {
+        photoScale = photoScale + step;
+        setPhotoScale(photoScale);
+      }
     }
-    if (buttonControl === photoInc && (photoScale + step) <= 100) {
-      photoScale = photoScale + step;
-      setPhotoScale(photoScale);
+
+    function setPhotoScale(scale) {
+      photoSize.value = scale + '%';
+      img.style.transform = 'scale(' + scale / 100 + ')';
     }
-  }
 
-  function setPhotoScale(scale) {
-    photoSize.value = scale + '%';
-    img.style.transform = 'scale(' + scale / 100 + ')';
-  }
-
-  setPhotoScale(startValue);
-};
+    setPhotoScale(startValue);
+  };
+})();
