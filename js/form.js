@@ -19,15 +19,21 @@ uploadFileLabel.addEventListener('keydown', function (e) {
 function toggleOverlay() {
   uploadOverlay.classList.toggle('invisible');
   uploadForm.classList.toggle('invisible');
+
 // Функция отвечающая за размер фото
-// так же делает при открытии нового фото
-// размер по умолчанию
-  window.initializeScale(document.querySelector('.filter-image-preview'), 25, 50);
+  var adjustScale = function (size) {
+    var photo = document.querySelector('.upload-form-preview');
+    photo.style.transform = 'scale(' + size / 100 + ')';
+  };
+
+  window.initializeScale(document.querySelector('.upload-resize-controls'), 25, 50, adjustScale);
 }
 
+var previewPhoto = document.querySelector('.upload-form-preview');
+var fieldsetFilters = document.querySelectorAll('.upload-filter-controls');
+
 // функция переключения фильтров
-window.initializeFilters(
-    document.querySelector('.upload-form-preview'),
-    document.querySelector('.upload-filter-controls'),
-    document.querySelectorAll('input[name="upload-filter"]')
+window.initializeFilters(fieldsetFilters, function (filters) {
+
+}
 );
