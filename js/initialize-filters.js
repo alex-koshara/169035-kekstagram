@@ -1,34 +1,29 @@
 'use strict';
 
 window.initializeFilters = (function () {
+  var oldFilter = null;
+  var newFilter = null;
 
-  function getFilterName(filterRadio) {
-    return 'filter-' + filterRadio.value;
-  }
+  return function (fieldsetControll, callback) {
 
-  return function (img, fieldsetFilters, filtersRadio) {
-
-    fieldsetFilters.addEventListener('keydown', function (e) {
+    fieldsetControll.addEventListener('keydown', function (e) {
       if (window.pressEnterOrSpace(e)) {
         var filterRadio = e.target.previousElementSibling;
-        toggleFilter(filterRadio);
+        setFilterName(filterRadio);
         filterRadio.checked = true;
       }
     });
 
-    fieldsetFilters.addEventListener('click', onFilterClick);
+    fieldsetControll.addEventListener('click', onFilterClick);
 
-    function onFilterClick(e) {
-      toggleFilter(e.target);
+    function setFilterName(filterRadio) {
+      newFilter = 'filter-' + filterRadio.value;
+      callback(newFilter, oldFilter);
+      oldFilter = newFilter;
     }
 
-    // удаляем старые фильтры и добавляем кликнутый
-    function toggleFilter(filterRadio) {
-      var filterClassName = getFilterName(filterRadio);
-      for (var k = 0; k < filtersRadio.length; k++) {
-        img.classList.remove(getFilterName(filtersRadio[k]));
-      }
-      img.classList.add(filterClassName);
+    function onFilterClick(e) {
+      setFilterName(e.target);
     }
   };
 })();
