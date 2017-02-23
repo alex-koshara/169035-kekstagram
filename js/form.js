@@ -16,18 +16,25 @@ uploadFileLabel.addEventListener('keydown', function (e) {
   }
 });
 
+var previewPhoto = document.querySelector('.filter-image-preview');
+var defaultPhotoScale = 50;
+var photoScaleStep = 25;
+// Функция отвечающая за размер фото
+var adjustScale = function (size) {
+  previewPhoto.style.transform = 'scale(' + size / 100 + ')';
+};
+
 function toggleOverlay() {
   uploadOverlay.classList.toggle('invisible');
   uploadForm.classList.toggle('invisible');
-// Функция отвечающая за размер фото
-// так же делает при открытии нового фото
-// размер по умолчанию
-  window.initializeScale(document.querySelector('.filter-image-preview'), 25, 50);
+
+  window.initializeScale(document.querySelector('.upload-resize-controls'), photoScaleStep, defaultPhotoScale, adjustScale);
 }
 
-// функция переключения фильтров
-window.initializeFilters(
-    document.querySelector('.upload-form-preview'),
-    document.querySelector('.upload-filter-controls'),
-    document.querySelectorAll('input[name="upload-filter"]')
-);
+var setPhotoFilter = function (newFilter, oldFilter) {
+  previewPhoto.classList.remove(oldFilter);
+  previewPhoto.classList.add(newFilter);
+};
+
+// функция переключения
+window.initializeFilters(document.querySelector('.upload-filter-controls'), setPhotoFilter);
