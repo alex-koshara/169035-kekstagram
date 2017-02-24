@@ -7,8 +7,8 @@ var closeForm = document.querySelector('.upload-form-cancel');
 var uploadOverlay = document.querySelector('.upload-overlay');
 
 // Закрытие и открытие формы
-uploadFile.addEventListener('change', toggleOverlay);
-closeForm.addEventListener('click', toggleOverlay);
+uploadFile.addEventListener('change', onToggleOverlay);
+closeForm.addEventListener('click', onToggleOverlay);
 
 uploadFileLabel.addEventListener('keydown', function (e) {
   if (window.pressEnterOrSpace(e)) {
@@ -17,18 +17,18 @@ uploadFileLabel.addEventListener('keydown', function (e) {
 });
 
 var previewPhoto = document.querySelector('.filter-image-preview');
-var defaultPhotoScale = 50;
+var DEFAULT_PHOTO_SCALE = 50;
 var photoScaleStep = 25;
 // Функция отвечающая за размер фото
-var adjustScale = function (size) {
+var setAdjustScale = function (size) {
   previewPhoto.style.transform = 'scale(' + size / 100 + ')';
 };
 
-function toggleOverlay() {
+function onToggleOverlay() {
   uploadOverlay.classList.toggle('invisible');
   uploadForm.classList.toggle('invisible');
 
-  window.initializeScale(document.querySelector('.upload-resize-controls'), photoScaleStep, defaultPhotoScale, adjustScale);
+  window.initializeScale(document.querySelector('.upload-resize-controls'), photoScaleStep, DEFAULT_PHOTO_SCALE, setAdjustScale);
 }
 
 var setPhotoFilter = function (newFilter, oldFilter) {

@@ -5,39 +5,45 @@ window.pictures = (function () {
   var pictures = [];
   var currentPictures = [];
   var picturesContainer = document.querySelector('.pictures');
+  var SHOW_FILTER_COUNT = 10;
 
   window.load(DATA_URL, function (data) {
     pictures = data;
     currentPictures = data;
     var sortFilters = document.querySelector('.filters');
-    var SHOW_FILTER_COUNT = 10;
 
-    sortFilters.addEventListener('click', function (e) {
-      switch (e.target.id) {
-        case 'filter-popular':
-          currentPictures = data;
-          break;
-        case 'filter-new':
-          currentPictures = getNewPictures(SHOW_FILTER_COUNT);
-          break;
-        case 'filter-discussed':
-          currentPictures = getDiscussedPictures(data);
-          break;
-      }
-      renderPictures(currentPictures);
-    });
+    sortFilters.addEventListener('click', onSortClick);
 
     sortFilters.classList.remove('hidden');
 
     renderPictures(pictures);
 
-    picturesContainer.addEventListener('click', showPicture);
+    picturesContainer.addEventListener('click', onShowPicture);
     picturesContainer.addEventListener('keydown', function (e) {
       if (window.pressEnterOrSpace(e)) {
-        showPicture(e);
+        onShowPicture(e);
       }
     });
   });
+
+  function onSortClick(e) {
+    renderPicturesByFilter(e.target.id);
+  }
+
+  function renderPicturesByFilter(filterId) {
+    switch (filterId) {
+      case 'filter-popular':
+        currentPictures = pictures;
+        break;
+      case 'filter-new':
+        currentPictures = getNewPictures(SHOW_FILTER_COUNT);
+        break;
+      case 'filter-discussed':
+        currentPictures = getDiscussedPictures(pictures);
+        break;
+    }
+    renderPictures(currentPictures);
+  }
 
   function getDiscussedPictures(array) {
     return array.slice(0).sort(function (item1, item2) {
@@ -68,7 +74,7 @@ window.pictures = (function () {
     });
   }
 
-  function showPicture(event) {
+  function onShowPicture(event) {
     event.preventDefault();
     var pictureIndex = getPictureIndex(event);
     if (pictureIndex >= 0) {
