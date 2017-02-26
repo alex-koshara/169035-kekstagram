@@ -4,17 +4,7 @@ window.initializeFilters = (function () {
   var oldFilter = null;
   var newFilter = null;
 
-  return function (fieldsetControll, callback) {
-
-    fieldsetControll.addEventListener('keydown', function (e) {
-      if (window.pressEnterOrSpace(e)) {
-        var filterRadio = e.target.previousElementSibling;
-        setFilterName(filterRadio);
-        filterRadio.checked = true;
-      }
-    });
-
-    fieldsetControll.addEventListener('click', onFilterClick);
+  return function (fieldsetControl, callback) {
 
     function setFilterName(filterRadio) {
       newFilter = 'filter-' + filterRadio.value;
@@ -25,5 +15,23 @@ window.initializeFilters = (function () {
     function onFilterClick(e) {
       setFilterName(e.target);
     }
+
+    function onFilterDown(e) {
+      if (window.pressEnterOrSpace(e)) {
+        var filterRadio = e.target.previousElementSibling;
+
+        filterRadio.checked = true;
+
+        setFilterName(filterRadio);
+      }
+    }
+
+    fieldsetControl.addEventListener('keydown', onFilterDown);
+    fieldsetControl.addEventListener('click', onFilterClick);
+
+    return function () {
+      fieldsetControl.removeEventListener('click', onFilterClick);
+      fieldsetControl.removeEventListener('keydown', onFilterDown);
+    };
   };
 })();
