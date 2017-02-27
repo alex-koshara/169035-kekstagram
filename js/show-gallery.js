@@ -7,16 +7,16 @@ window.showGallery = (function () {
   var pictureLikes = galleryOverlay.querySelector('.likes-count');
   var pictureComments = galleryOverlay.querySelector('.comments-count');
 
+  function onCloseGallery() {
+    galleryOverlay.classList.add('invisible');
+  }
+
   closeGalleryOverlay.addEventListener('click', onCloseGallery);
   closeGalleryOverlay.addEventListener('keydown', function (e) {
     if (window.pressEnterOrSpace(e)) {
       onCloseGallery();
     }
   });
-
-  function onCloseGallery() {
-    galleryOverlay.classList.add('invisible');
-  }
 
   return function (data) {
     pictureImg.setAttribute('src', data.url);

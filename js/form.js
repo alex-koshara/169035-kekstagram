@@ -1,40 +1,52 @@
 'use strict';
 
-var uploadForm = document.querySelector('#upload-select-image');
-var uploadFile = document.querySelector('#upload-file');
-var uploadFileLabel = document.querySelector('.upload-file.upload-control');
-var closeForm = document.querySelector('.upload-form-cancel');
-var uploadOverlay = document.querySelector('.upload-overlay');
+(function () {
+  var DEFAULT_PHOTO_SCALE = 100;
+  var PHOTO_SCALE_STEP = 25;
+  var SCALE_PERCENT = 100;
 
-// Закрытие и открытие формы
-uploadFile.addEventListener('change', onToggleOverlay);
-closeForm.addEventListener('click', onToggleOverlay);
+  var uploadForm = document.querySelector('#upload-select-image');
+  var uploadFile = document.querySelector('#upload-file');
+  var uploadFileLabel = document.querySelector('.upload-file.upload-control');
+  var uploadCloseForm = document.querySelector('.upload-form-cancel');
+  var uploadOverlay = document.querySelector('.upload-overlay');
 
-uploadFileLabel.addEventListener('keydown', function (e) {
-  if (window.pressEnterOrSpace(e)) {
-    uploadFile.click(); // принудительный клик
+  var photoPreview = document.querySelector('.filter-image-preview');
+  var photoResizeControl = document.querySelector('.upload-resize-controls');
+  var photoFilterControl = document.querySelector('.upload-filter-controls');
+  var unbindFilters;
+  var unbindScale;
+
+  function setScale(size) {
+    photoPreview.style.transform = 'scale(' + (size / SCALE_PERCENT).toString() + ')';
   }
-});
 
-var previewPhoto = document.querySelector('.filter-image-preview');
-var DEFAULT_PHOTO_SCALE = 50;
-var photoScaleStep = 25;
-// Функция отвечающая за размер фото
-var setAdjustScale = function (size) {
-  previewPhoto.style.transform = 'scale(' + size / 100 + ')';
-};
+  function onToggleOverlay() {
+    uploadOverlay.classList.toggle('invisible');
+    uploadForm.classList.toggle('invisible');
 
-function onToggleOverlay() {
-  uploadOverlay.classList.toggle('invisible');
-  uploadForm.classList.toggle('invisible');
+    // функция переключения
+    if (uploadForm.classList.contains('invisible')) {
+      unbindFilters = window.initializeFilters(photoFilterControl, setPhotoFilter);
+      unbindScale = window.initializeScale(photoResizeControl, PHOTO_SCALE_STEP, DEFAULT_PHOTO_SCALE, setScale);
+    } else {
+      unbindFilters();
+      unbindScale();
+    }
+  }
 
-  window.initializeScale(document.querySelector('.upload-resize-controls'), photoScaleStep, DEFAULT_PHOTO_SCALE, setAdjustScale);
-}
+  function setPhotoFilter(newFilter, oldFilter) {
+    photoPreview.classList.remove(oldFilter);
+    photoPreview.classList.add(newFilter);
+  }
 
-var setPhotoFilter = function (newFilter, oldFilter) {
-  previewPhoto.classList.remove(oldFilter);
-  previewPhoto.classList.add(newFilter);
-};
+  // Закрытие и открытие формы
+  uploadFile.addEventListener('change', onToggleOverlay);
+  uploadCloseForm.addEventListener('click', onToggleOverlay);
 
-// функция переключения
-window.initializeFilters(document.querySelector('.upload-filter-controls'), setPhotoFilter);
+  uploadFileLabel.addEventListener('keydown', function (e) {
+    if (window.pressEnterOrSpace(e)) {
+      uploadFile.click();
+    }
+  });
+})();
