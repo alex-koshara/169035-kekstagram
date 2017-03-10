@@ -30,7 +30,6 @@
       unbindFilters = window.initializeFilters(photoFilterControl, setPhotoFilter);
       unbindScale = window.initializeScale(photoResizeControl, PHOTO_SCALE_STEP, DEFAULT_PHOTO_SCALE, setScale);
       uploadFile.removeEventListener('change', onToggleOverlay);
-
     } else {
       unbindFilters();
       unbindScale();
